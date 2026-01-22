@@ -16,6 +16,53 @@ const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
 const pendingCount = document.getElementById('pendingCount');
 const completedCount = document.getElementById('completedCount');
 const totalCount = document.getElementById('totalCount');
+const notificationContainer = document.getElementById('notificationContainer');
+
+// Notification System
+function showNotification(message, type = 'error') {
+    // Clear previous notifications
+    notificationContainer.innerHTML = '';
+    
+    const notification = document.createElement('div');
+    const colors = {
+        error: 'bg-red-500/20 border-red-500/40 text-red-300',
+        success: 'bg-emerald-500/20 border-emerald-500/40 text-emerald-300',
+        warning: 'bg-orange-500/20 border-orange-500/40 text-orange-300'
+    };
+    
+    const icons = {
+        error: '❌',
+        success: '✅',
+        warning: '⚠️'
+    };
+    
+    notification.className = `border rounded-lg p-4 flex items-center gap-3 animate-slide-in ${colors[type] || colors.error}`;
+    notification.innerHTML = `
+        <span class="text-2xl">${icons[type]}</span>
+        <span class="font-semibold">${message}</span>
+    `;
+    
+    notificationContainer.appendChild(notification);
+    
+    // Auto remove setelah 4 detik
+    setTimeout(() => {
+        notification.style.animation = 'slideIn 0.3s ease-out reverse';
+        setTimeout(() => notification.remove(), 300);
+    }, 4000);
+}
+
+// Set minimum date ke tanggal sekarang
+function setMinimumDate() {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    const minDate = `${year}-${month}-${day}`;
+    dateInput.setAttribute('min', minDate);
+}
+
+// Panggil function ini saat page load
+setMinimumDate();
 
 // FUNGSI UTAMA: RENDER DATA
 function renderTasks() {
@@ -78,7 +125,18 @@ addBtn.addEventListener('click', () => {
     const dateValue = dateInput.value;
 
     if (!textValue || !dateValue) {
-        alert("Mission target and deadline cannot be empty!");
+        showNotification("Task name and deadline cannot be empty!", "warning");
+        return;
+    }
+
+    // Validasi tanggal tidak boleh kurang dari hari ini
+    const selectedDate = new Date(dateValue);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Reset jam agar perbandingan hanya fokus pada tanggal
+    selectedDate.setHours(0, 0, 0, 0);
+
+    if (selectedDate < today) {
+        showNotification("Deadline cannot be set to a past date! Choose today or later.", "error");
         return;
     }
 
@@ -91,6 +149,7 @@ addBtn.addEventListener('click', () => {
     taskInput.value = '';
     dateInput.value = '';
     renderTasks();
+    showNotification("Task added successfully!", "success");
 });
 
 // FITUR 3A: DELETE ALL (Modal Dialog Version)
@@ -98,7 +157,7 @@ addBtn.addEventListener('click', () => {
 if (deleteAllBtn) {
     deleteAllBtn.addEventListener('click', () => {
         if (tasks.length === 0) {
-            alert("Your mission list is already clear.");
+            showNotification("Your task list is already empty!", "warning");
             return;
         }
         // Tampilkan modal
@@ -119,6 +178,7 @@ confirmDeleteBtn.addEventListener('click', () => {
     localStorage.removeItem('my_tasks'); // Hapus dari localStorage
     renderTasks(); // Menjalankan fungsi render untuk membersihkan layar
     deleteConfirmModal.classList.add('hidden'); // Tutup modal
+    showNotification("All tasks deleted successfully!", "success");
     console.log("Database Wiped");
 });
 

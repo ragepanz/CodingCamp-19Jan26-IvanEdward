@@ -51,6 +51,9 @@
         <!-- Main Container -->
         <div class="glass-effect border border-purple-500/30 rounded-3xl p-8 shadow-2xl shadow-purple-500/20">
             
+            <!-- Notification Area -->
+            <div id="notificationContainer" class="mb-6"></div>
+            
             <!-- Input Section -->
             <div class="mb-8">
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
@@ -62,7 +65,8 @@
                     <div class="md:col-span-1">
                         <label class="text-xs uppercase tracking-widest text-purple-300 font-semibold mb-2 block">Deadline</label>
                         <input type="date" id="dateInput" 
-                            class="w-full bg-[#1a0f2e] border border-purple-500/30 hover:border-pink-500/50 p-3.5 rounded-xl outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all text-slate-300">
+                            class="w-full bg-[#1a0f2e] border border-purple-500/30 hover:border-pink-500/50 p-3.5 rounded-xl outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all text-slate-300"
+                            min="">
                     </div>
                     <button id="addBtn" class="md:col-span-1 md:mt-7 bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 hover:from-pink-400 hover:via-purple-400 hover:to-blue-400 text-white font-bold rounded-xl transition-all active:scale-95 shadow-lg shadow-pink-500/50 flex items-center justify-center gap-2">
                         <span>ADD</span>
